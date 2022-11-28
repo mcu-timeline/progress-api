@@ -10,9 +10,9 @@
 
 export interface UpsertUserProgressInput {
     userId: string;
-    timelineId: string;
-    lastWatched: string;
-    activeTimeline: string;
+    timelineId?: Nullable<string>;
+    lastWatched?: Nullable<string>;
+    activeTimeline?: Nullable<string>;
 }
 
 export interface IQuery {

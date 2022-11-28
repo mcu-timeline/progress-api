@@ -12,7 +12,7 @@ type UserProgress {
 
 input UpsertUserProgressInput {
   userId: String!
-  timelineId: String!
-  lastWatched: String!
-  activeTimeline: String!
+  timelineId: String
+  lastWatched: String
+  activeTimeline: String
 }

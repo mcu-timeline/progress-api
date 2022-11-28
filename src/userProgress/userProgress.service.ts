@@ -60,7 +60,7 @@ export class UsersProgressService {
   async getUserProgress(userId: string): Promise<UserProgress> {
     const mongoUserProgress = await this.userProgressModel.findOne({ userID: userId });
 
-    const progressForGivenTimeline = mongoUserProgress.progress[mongoUserProgress.activeTimeline];
+    const progressForGivenTimeline = mongoUserProgress.get('progress').get(mongoUserProgress.activeTimeline);
 
     return {
       id: mongoUserProgress._id.toString(),

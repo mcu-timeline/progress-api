@@ -1,0 +1,18 @@
+type Progress {
+  timelineId: String
+  lastWatched: String
+}
+
+type UserProgress {
+  id: String!
+  userId: String!
+  activeTimeline: String
+  progress: Progress
+}
+
+input UpsertUserProgressInput {
+  userId: String!
+  timelineId: String!
+  lastWatched: String!
+  activeTimeline: String!
+}

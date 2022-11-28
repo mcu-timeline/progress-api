@@ -8,21 +8,31 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export interface CreateUserInput {
-    email?: Nullable<string>;
+export interface UpsertUserProgressInput {
+    userId: string;
+    timelineId: string;
+    lastWatched: string;
+    activeTimeline: string;
 }
 
 export interface IQuery {
-    user(id?: Nullable<string>): Nullable<User> | Promise<Nullable<User>>;
+    getUserProgress(userId?: Nullable<string>): Nullable<UserProgress> | Promise<Nullable<UserProgress>>;
 }
 
 export interface IMutation {
-    createUser(createUserInput?: Nullable<CreateUserInput>): Nullable<User> | Promise<Nullable<User>>;
+    upsertUserProgress(upsertUserProgressInput?: Nullable<UpsertUserProgressInput>): Nullable<UserProgress> | Promise<Nullable<UserProgress>>;
 }
 
-export interface User {
+export interface Progress {
+    timelineId?: Nullable<string>;
+    lastWatched?: Nullable<string>;
+}
+
+export interface UserProgress {
     id: string;
-    email: string;
+    userId: string;
+    activeTimeline?: Nullable<string>;
+    progress?: Nullable<Progress>;
 }
 
 type Nullable<T> = T | null;

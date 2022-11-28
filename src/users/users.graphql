@@ -1,8 +1,0 @@
-type User @key(fields: "id") {
-  id: String!
-  email: String!
-}
-
-input CreateUserInput {
-  email: String
-}

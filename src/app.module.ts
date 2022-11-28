@@ -9,7 +9,7 @@ import {
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Config, config } from './config';
 import { MongooseModule } from '@nestjs/mongoose'
-import { UsersModule } from './users/users.module'
+import { UserProgressModule } from './userProgress'
 
 @Module({
   imports: [
@@ -30,7 +30,7 @@ import { UsersModule } from './users/users.module'
       }),
       inject: [ConfigService]
     }),
-    UsersModule,
+    UserProgressModule,
   ],
   controllers: [],
   providers: [],

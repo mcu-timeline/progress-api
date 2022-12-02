@@ -9,7 +9,7 @@ export class MongoUserProgress {
   @Prop({ type: mongoose.Schema.Types.String, required: true, unique: true })
   userId: string;
 
-  @Prop({type: mongoose.Schema.Types.String, required: true })
+  @Prop({ type: mongoose.Schema.Types.String, required: true })
   activeTimeline: string;
 
   @Prop({ type: mongoose.Schema.Types.Map })
@@ -17,8 +17,9 @@ export class MongoUserProgress {
     [timelineID in string]: {
       timelineId: string;
       lastWatched: string;
-    }
-  }
+    };
+  };
 }
 
-export const UserProgressSchema = SchemaFactory.createForClass(MongoUserProgress);
+export const UserProgressSchema =
+  SchemaFactory.createForClass(MongoUserProgress);

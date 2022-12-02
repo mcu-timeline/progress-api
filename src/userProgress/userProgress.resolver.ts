@@ -1,7 +1,13 @@
-import { Args, Mutation, Query, Resolver, ResolveReference } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Query,
+  Resolver,
+  ResolveReference,
+} from '@nestjs/graphql';
 
 import { UsersProgressService } from './userProgress.service';
-import { UpsertUserProgressInput, UserProgress } from '../graphql.schema'
+import { UpsertUserProgressInput, UserProgress } from '../graphql.schema';
 
 @Resolver('users')
 export class UserProgressResolver {
@@ -21,8 +27,13 @@ export class UserProgressResolver {
   }
 
   @Mutation('upsertUserProgress')
-  async upsertUserProgress(@Args('upsertUserProgressInput') upsertUserProgressInput: UpsertUserProgressInput): Promise<UserProgress> {
-    return this.usersProgressService.upsertUserProgress(upsertUserProgressInput);
+  async upsertUserProgress(
+    @Args('upsertUserProgressInput')
+    upsertUserProgressInput: UpsertUserProgressInput,
+  ): Promise<UserProgress> {
+    return this.usersProgressService.upsertUserProgress(
+      upsertUserProgressInput,
+    );
   }
 
   @ResolveReference()
@@ -30,6 +41,21 @@ export class UserProgressResolver {
     __typename: string;
     upsertProgressInput: UpsertUserProgressInput;
   }) {
-    return this.usersProgressService.upsertUserProgress(reference.upsertProgressInput);
+    return this.usersProgressService.upsertUserProgress(
+      reference.upsertProgressInput,
+    );
+  }
+
+  @Mutation('deleteUserProgress')
+  async deleteUserProgress(
+    @Args('userId')
+    userId: string,
+  ): Promise<string> {
+    return this.usersProgressService.deleteUserProgress(userId);
+  }
+
+  @ResolveReference()
+  resolveDeleteUserProgress(reference: { __typename: string; userId: string }) {
+    return this.usersProgressService.deleteUserProgress(reference.userId);
   }
 }

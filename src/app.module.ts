@@ -8,8 +8,8 @@ import {
 } from '@nestjs/apollo';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Config, config } from './config';
-import { MongooseModule } from '@nestjs/mongoose'
-import { UserProgressModule } from './userProgress'
+import { MongooseModule } from '@nestjs/mongoose';
+import { UserProgressModule } from './userProgress';
 
 @Module({
   imports: [
@@ -28,7 +28,7 @@ import { UserProgressModule } from './userProgress'
       useFactory: (configService: ConfigService<Config>) => ({
         uri: configService.get('MONGODB_URI'),
       }),
-      inject: [ConfigService]
+      inject: [ConfigService],
     }),
     UserProgressModule,
   ],

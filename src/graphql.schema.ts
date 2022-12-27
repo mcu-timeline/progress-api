@@ -8,23 +8,20 @@
 /* eslint-disable */
 
 export interface UpsertUserProgressInput {
-  userId: string;
   timelineId?: Nullable<string>;
   lastWatched?: Nullable<string>;
   activeTimeline?: Nullable<string>;
 }
 
 export interface IQuery {
-  getUserProgress(
-    userId?: Nullable<string>,
-  ): Nullable<UserProgress> | Promise<Nullable<UserProgress>>;
+  getUserProgress(): Nullable<UserProgress> | Promise<Nullable<UserProgress>>;
 }
 
 export interface IMutation {
   upsertUserProgress(
     upsertUserProgressInput?: Nullable<UpsertUserProgressInput>,
   ): Nullable<UserProgress> | Promise<Nullable<UserProgress>>;
-  deleteUserProgress(userId: string): string | Promise<string>;
+  deleteUserProgress(): string | Promise<string>;
 }
 
 export interface Progress {

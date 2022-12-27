@@ -1,8 +1,10 @@
 type Query {
-    getUserProgress(userId: String): UserProgress
+  getUserProgress: UserProgress
 }
 
 type Mutation {
-    upsertUserProgress(upsertUserProgressInput: UpsertUserProgressInput): UserProgress
-    deleteUserProgress(userId: String!): String!
+  upsertUserProgress(
+    upsertUserProgressInput: UpsertUserProgressInput
+  ): UserProgress
+  deleteUserProgress: String!
 }

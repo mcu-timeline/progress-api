@@ -4,6 +4,7 @@ import {
   Query,
   Resolver,
   ResolveReference,
+  Context,
 } from '@nestjs/graphql';
 
 import { UsersProgressService } from './userProgress.service';
@@ -14,7 +15,9 @@ export class UserProgressResolver {
   constructor(private readonly usersProgressService: UsersProgressService) {}
 
   @Query('getUserProgress')
-  async getUserProgress(@Args('userId') userId: string): Promise<UserProgress> {
+  async getUserProgress(
+    @Context('userId') userId: string,
+  ): Promise<UserProgress> {
     return this.usersProgressService.getUserProgress(userId);
   }
 
@@ -30,6 +33,7 @@ export class UserProgressResolver {
   async upsertUserProgress(
     @Args('upsertUserProgressInput')
     upsertUserProgressInput: UpsertUserProgressInput,
+    @Context('userId') userId: string,
   ): Promise<UserProgress> {
     return this.usersProgressService.upsertUserProgress(
       upsertUserProgressInput,
@@ -48,7 +52,7 @@ export class UserProgressResolver {
 
   @Mutation('deleteUserProgress')
   async deleteUserProgress(
-    @Args('userId')
+    @Context('userId')
     userId: string,
   ): Promise<string> {
     return this.usersProgressService.deleteUserProgress(userId);

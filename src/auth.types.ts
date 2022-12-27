@@ -1,7 +1,7 @@
 import type { GqlExecutionContext } from '@nestjs/graphql';
 import { Request } from 'express';
 
-export type Context = GqlExecutionContext & {
+export type AuthContext = GqlExecutionContext & {
   userId: string;
   req?: Request;
 };

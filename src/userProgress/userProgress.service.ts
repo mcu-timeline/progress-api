@@ -12,10 +12,10 @@ export class UsersProgressService {
   ) {}
 
   async upsertUserProgress(
+    userId: string,
     upsertUserProgressInput: UpsertUserProgressInput,
   ): Promise<UserProgress> {
-    const { userId, timelineId, lastWatched, activeTimeline } =
-      upsertUserProgressInput;
+    const { timelineId, lastWatched, activeTimeline } = upsertUserProgressInput;
     const existingUserProgress = await this.userProgressModel
       .findOne({ userId })
       .exec();

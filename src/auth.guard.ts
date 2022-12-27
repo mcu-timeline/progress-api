@@ -5,14 +5,14 @@ import { verify } from 'jsonwebtoken';
 import * as jwksClient from 'jwks-rsa';
 
 import { Config } from './config';
-import { Context, isJWTPayload } from './auth.types';
+import { AuthContext, isJWTPayload } from './auth.types';
 
 @Injectable()
 export class JwtAuthGuard {
   constructor(private configService: ConfigService<Config>) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const ctx = GqlExecutionContext.create(context).getContext<Context>();
+    const ctx = GqlExecutionContext.create(context).getContext<AuthContext>();
     const headers = ctx.req?.headers;
 
     if (!headers) {

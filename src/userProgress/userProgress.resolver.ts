@@ -8,7 +8,7 @@ import {
 } from '@nestjs/graphql';
 
 import { UsersProgressService } from './userProgress.service';
-import { UpsertUserProgressInput, UserProgress } from '../graphql.schema';
+import { UpsertActiveTimelineInput, UpdateCurrentMovieInput , UserProgress } from '../graphql.schema';
 import { AuthContext } from '../auth.types';
 
 @Resolver('users')
@@ -32,29 +32,55 @@ export class UserProgressResolver {
     return this.usersProgressService.getUserProgress(context.userId);
   }
 
-  @Mutation('upsertUserProgress')
-  async upsertUserProgress(
-    @Args('upsertUserProgressInput')
-    upsertUserProgressInput: UpsertUserProgressInput,
+  @Mutation('upsertActiveTimeline')
+  async upsertActiveTimeline(
+    @Args('upsertActiveTimelineInput')
+      upsertActiveTimelineInput: UpsertActiveTimelineInput,
     @Context('userId') userId: string,
   ): Promise<UserProgress> {
-    return this.usersProgressService.upsertUserProgress(
+    return this.usersProgressService.upsertActiveTimeline(
       userId,
-      upsertUserProgressInput,
+      upsertActiveTimelineInput,
     );
   }
 
   @ResolveReference()
-  resolveUpsertUserProgress(
+  resolveUpsertActiveTimeline(
     reference: {
       __typename: string;
-      upsertProgressInput: UpsertUserProgressInput;
+      upsertActiveTimelineInput: UpsertActiveTimelineInput;
     },
     context: AuthContext,
   ) {
-    return this.usersProgressService.upsertUserProgress(
+    return this.usersProgressService.upsertActiveTimeline(
       context.userId,
-      reference.upsertProgressInput,
+      reference.upsertActiveTimelineInput,
+    );
+  }
+
+  @Mutation('updateCurrentMovie')
+  async updateCurrentMovie(
+    @Args('updateCurrentMovieInput')
+      updateCurrentMovieInput: UpdateCurrentMovieInput,
+    @Context('userId') userId: string,
+  ): Promise<UserProgress> {
+    return this.usersProgressService.updateCurrentMovie(
+      userId,
+      updateCurrentMovieInput,
+    );
+  }
+
+  @ResolveReference()
+  resolveUpdateCurrentMovie(
+    reference: {
+      __typename: string;
+      updateCurrentMovieInput: UpdateCurrentMovieInput;
+    },
+    context: AuthContext,
+  ) {
+    return this.usersProgressService.updateCurrentMovie(
+      context.userId,
+      reference.updateCurrentMovieInput,
     );
   }
 

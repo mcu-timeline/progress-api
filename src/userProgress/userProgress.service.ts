@@ -2,7 +2,7 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { MongoUserProgress, UserProgressDocument } from './userProgress.schema';
-import { UpsertUserProgressInput, UserProgress } from '../graphql.schema';
+import { UpdateCurrentMovieInput, UpsertActiveTimelineInput, UserProgress } from '../graphql.schema';
 
 @Injectable()
 export class UsersProgressService {
@@ -11,82 +11,78 @@ export class UsersProgressService {
     private userProgressModel: Model<UserProgressDocument>,
   ) {}
 
-  async upsertUserProgress(
-    userId: string,
-    upsertUserProgressInput: UpsertUserProgressInput,
-  ): Promise<UserProgress> {
-    const { timelineId, lastWatched, activeTimeline } = upsertUserProgressInput;
-    const existingUserProgress = await this.userProgressModel
-      .findOne({ userId })
-      .exec();
+  async updateCurrentMovie(userId: string, updateCurrentMovieInput: UpdateCurrentMovieInput): Promise<UserProgress> {
+    const { activeTimelineId, currentMovieId } = updateCurrentMovieInput;
 
-    let oldProgress = {};
-
-    if (existingUserProgress) {
-      const existingProgressKeys = existingUserProgress.get('progress').keys();
-
-      for (const key of existingProgressKeys) {
-        oldProgress = {
-          ...oldProgress,
-          [key]: existingUserProgress.get('progress').get(key),
-        };
-      }
-    }
-
-    const newProgress = {
-      ...oldProgress,
-      [timelineId]: {
-        lastWatched,
-        timelineId,
-      },
-    };
-
-    await this.userProgressModel.updateOne(
+    const userProgress = await this.userProgressModel.findOneAndUpdate(
       { userId },
       {
-        activeTimeline,
-        progress: newProgress,
+        $set: {
+          [`progress.${activeTimelineId}`]: {
+            timelineId: activeTimelineId,
+            currentMovieId,
+          }
+        }
       },
-      { upsert: true },
+      { new: true, upsert: true },
     );
 
-    const newUserProgress = await this.userProgressModel
-      .findOne({ userId })
-      .exec();
-    const progressForGivenTimeline = newUserProgress
-      .get('progress')
-      .get(newUserProgress.activeTimeline);
-
-    if (!progressForGivenTimeline) {
-      throw new Error('Progress for given timeline does not exist');
+    if (!userProgress) {
+      throw new Error('User progress does not exits')
     }
 
+    const movieProgress = userProgress.get('progress').get(userProgress.activeTimeline);
+    const movieId = movieProgress ? movieProgress.currentMovieId : null;
+
     return {
-      id: newUserProgress._id.toString(),
-      userId: newUserProgress.userId,
-      activeTimeline: newUserProgress.activeTimeline,
-      progress: {
-        ...progressForGivenTimeline,
+      id: userProgress._id.toString(),
+      userId: userProgress.userId,
+      activeTimeline: userProgress.activeTimeline,
+      currentMovieId: movieId,
+    }
+  }
+
+  async upsertActiveTimeline(
+    userId: string,
+    upsertActiveTimelineInput: UpsertActiveTimelineInput,
+  ): Promise<UserProgress> {
+    const { activeTimelineId } = upsertActiveTimelineInput;
+
+    const userProgress = await this.userProgressModel.findOneAndUpdate(
+      { userId },
+      {
+        $set: {
+          activeTimeline: activeTimelineId,
+          progress: {}
+        },
       },
-    };
+      { new: true, upsert: true },
+    );
+
+    const movieProgress = userProgress.get('progress').get(activeTimelineId);
+    const movieId = movieProgress ? movieProgress.currentMovieId : null;
+
+    return {
+      id: userProgress._id.toString(),
+      activeTimeline: userProgress.activeTimeline,
+      userId: userProgress.userId,
+      currentMovieId: movieId,
+    }
   }
 
   async getUserProgress(userId: string): Promise<UserProgress> {
-    const mongoUserProgress = await this.userProgressModel.findOne({
-      userID: userId,
+    const userProgress = await this.userProgressModel.findOne({
+      userId,
     });
 
-    const progressForGivenTimeline = mongoUserProgress
-      .get('progress')
-      .get(mongoUserProgress.activeTimeline);
+    const movieProgress = userProgress.get('progress').get(userProgress.activeTimeline);
+    const movieId = movieProgress ? movieProgress.currentMovieId : null;
 
     return {
-      id: mongoUserProgress._id.toString(),
-      userId: mongoUserProgress.userId,
-      activeTimeline: mongoUserProgress.activeTimeline,
-      progress: {
-        ...progressForGivenTimeline,
-      },
+      id: userProgress._id.toString(),
+      userId: userProgress.userId,
+      activeTimeline: userProgress.activeTimeline,
+      currentMovieId: movieId,
     };
   }
 

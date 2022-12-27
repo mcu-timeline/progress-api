@@ -3,8 +3,7 @@ type Query {
 }
 
 type Mutation {
-  upsertUserProgress(
-    upsertUserProgressInput: UpsertUserProgressInput
-  ): UserProgress
+  upsertActiveTimeline(upsertActiveTimelineInput: UpsertActiveTimelineInput): UserProgress
+  updateCurrentMovie(updateCurrentMovieInput: UpdateCurrentMovieInput): UserProgress
   deleteUserProgress: String!
 }

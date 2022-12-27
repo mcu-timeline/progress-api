@@ -16,7 +16,7 @@ export class MongoUserProgress {
   progress: {
     [timelineID in string]: {
       timelineId: string;
-      lastWatched: string;
+      currentMovieId: string;
     };
   };
 }

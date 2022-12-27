@@ -1,17 +1,16 @@
-type Progress {
-  timelineId: String
-  lastWatched: String
-}
-
 type UserProgress {
   id: String!
-  userId: String!
+  userId: String
   activeTimeline: String
-  progress: Progress
+  currentMovieId: String
 }
 
-input UpsertUserProgressInput {
-  timelineId: String
-  lastWatched: String
-  activeTimeline: String
+input UpsertActiveTimelineInput {
+  activeTimelineId: String!
 }
+
+input UpdateCurrentMovieInput {
+  activeTimelineId: String!
+  currentMovieId: String!
+}
+

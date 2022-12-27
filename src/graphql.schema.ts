@@ -8,10 +8,13 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export interface UpsertUserProgressInput {
-    timelineId?: Nullable<string>;
-    lastWatched?: Nullable<string>;
-    activeTimeline?: Nullable<string>;
+export interface UpsertActiveTimelineInput {
+    activeTimelineId: string;
+}
+
+export interface UpdateCurrentMovieInput {
+    activeTimelineId: string;
+    currentMovieId: string;
 }
 
 export interface IQuery {
@@ -19,20 +22,16 @@ export interface IQuery {
 }
 
 export interface IMutation {
-    upsertUserProgress(upsertUserProgressInput?: Nullable<UpsertUserProgressInput>): Nullable<UserProgress> | Promise<Nullable<UserProgress>>;
+    upsertActiveTimeline(upsertActiveTimelineInput?: Nullable<UpsertActiveTimelineInput>): Nullable<UserProgress> | Promise<Nullable<UserProgress>>;
+    updateCurrentMovie(updateCurrentMovieInput?: Nullable<UpdateCurrentMovieInput>): Nullable<UserProgress> | Promise<Nullable<UserProgress>>;
     deleteUserProgress(): string | Promise<string>;
-}
-
-export interface Progress {
-    timelineId?: Nullable<string>;
-    lastWatched?: Nullable<string>;
 }
 
 export interface UserProgress {
     id: string;
-    userId: string;
+    userId?: Nullable<string>;
     activeTimeline?: Nullable<string>;
-    progress?: Nullable<Progress>;
+    currentMovieId?: Nullable<string>;
 }
 
 type Nullable<T> = T | null;

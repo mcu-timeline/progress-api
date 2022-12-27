@@ -1,19 +1,19 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
-
+import { ConfigService } from '@nestjs/config';
+import { GqlExecutionContext } from '@nestjs/graphql';
 import { verify } from 'jsonwebtoken';
 import * as jwksClient from 'jwks-rsa';
-import { ConfigService } from '@nestjs/config';
 
 import { Config } from './config';
-import { GqlExecutionContext } from '@nestjs/graphql';
+import { Context, isJWTPayload } from './auth.types';
 
 @Injectable()
 export class JwtAuthGuard {
   constructor(private configService: ConfigService<Config>) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const ctx = GqlExecutionContext.create(context);
-    const headers = ctx?.getArgByIndex(2)?.req?.headers;
+    const ctx = GqlExecutionContext.create(context).getContext<Context>();
+    const headers = ctx.req?.headers;
 
     if (!headers) {
       return false;
@@ -63,6 +63,11 @@ export class JwtAuthGuard {
 
     const decodedToken = await decodedTokenPromise;
 
-    return !!decodedToken;
+    if (isJWTPayload(decodedToken)) {
+      ctx.userId = decodedToken.sub;
+      return true;
+    }
+
+    return false;
   }
 }

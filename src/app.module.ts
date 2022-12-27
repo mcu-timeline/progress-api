@@ -8,7 +8,7 @@ import {
 } from '@nestjs/apollo';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Config, config } from './config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { UserProgressModule } from './userProgress';
 
 @Module({
@@ -25,8 +25,10 @@ import { UserProgressModule } from './userProgress';
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService<Config>) => ({
-        uri: configService.get('MONGODB_URI'),
+      useFactory: (
+        configService: ConfigService<Config>,
+      ): MongooseModuleOptions => ({
+        uri: configService.get('MONGODB_URI', { infer: true }),
       }),
       inject: [ConfigService],
     }),

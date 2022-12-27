@@ -8,7 +8,11 @@ import {
 } from '@nestjs/graphql';
 
 import { UsersProgressService } from './userProgress.service';
-import { UpsertActiveTimelineInput, UpdateCurrentMovieInput , UserProgress } from '../graphql.schema';
+import {
+  UpsertActiveTimelineInput,
+  UpdateCurrentMovieInput,
+  UserProgress,
+} from '../graphql.schema';
 import { AuthContext } from '../auth.types';
 
 @Resolver('users')
@@ -35,7 +39,7 @@ export class UserProgressResolver {
   @Mutation('upsertActiveTimeline')
   async upsertActiveTimeline(
     @Args('upsertActiveTimelineInput')
-      upsertActiveTimelineInput: UpsertActiveTimelineInput,
+    upsertActiveTimelineInput: UpsertActiveTimelineInput,
     @Context('userId') userId: string,
   ): Promise<UserProgress> {
     return this.usersProgressService.upsertActiveTimeline(
@@ -61,7 +65,7 @@ export class UserProgressResolver {
   @Mutation('updateCurrentMovie')
   async updateCurrentMovie(
     @Args('updateCurrentMovieInput')
-      updateCurrentMovieInput: UpdateCurrentMovieInput,
+    updateCurrentMovieInput: UpdateCurrentMovieInput,
     @Context('userId') userId: string,
   ): Promise<UserProgress> {
     return this.usersProgressService.updateCurrentMovie(

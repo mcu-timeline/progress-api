@@ -2,7 +2,11 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { MongoUserProgress, UserProgressDocument } from './userProgress.schema';
-import { UpdateCurrentMovieInput, UpsertActiveTimelineInput, UserProgress } from '../graphql.schema';
+import {
+  UpdateCurrentMovieInput,
+  UpsertActiveTimelineInput,
+  UserProgress,
+} from '../graphql.schema';
 
 @Injectable()
 export class UsersProgressService {
@@ -11,7 +15,10 @@ export class UsersProgressService {
     private userProgressModel: Model<UserProgressDocument>,
   ) {}
 
-  async updateCurrentMovie(userId: string, updateCurrentMovieInput: UpdateCurrentMovieInput): Promise<UserProgress> {
+  async updateCurrentMovie(
+    userId: string,
+    updateCurrentMovieInput: UpdateCurrentMovieInput,
+  ): Promise<UserProgress> {
     const { activeTimelineId, currentMovieId } = updateCurrentMovieInput;
 
     const userProgress = await this.userProgressModel.findOneAndUpdate(
@@ -21,17 +28,19 @@ export class UsersProgressService {
           [`progress.${activeTimelineId}`]: {
             timelineId: activeTimelineId,
             currentMovieId,
-          }
-        }
+          },
+        },
       },
       { new: true, upsert: true },
     );
 
     if (!userProgress) {
-      throw new Error('User progress does not exits')
+      throw new Error('User progress does not exits');
     }
 
-    const movieProgress = userProgress.get('progress').get(userProgress.activeTimeline);
+    const movieProgress = userProgress
+      .get('progress')
+      .get(userProgress.activeTimeline);
     const movieId = movieProgress ? movieProgress.currentMovieId : null;
 
     return {
@@ -39,7 +48,7 @@ export class UsersProgressService {
       userId: userProgress.userId,
       activeTimeline: userProgress.activeTimeline,
       currentMovieId: movieId,
-    }
+    };
   }
 
   async upsertActiveTimeline(
@@ -53,7 +62,7 @@ export class UsersProgressService {
       {
         $set: {
           activeTimeline: activeTimelineId,
-          progress: {}
+          progress: {},
         },
       },
       { new: true, upsert: true },
@@ -67,7 +76,7 @@ export class UsersProgressService {
       activeTimeline: userProgress.activeTimeline,
       userId: userProgress.userId,
       currentMovieId: movieId,
-    }
+    };
   }
 
   async getUserProgress(userId: string): Promise<UserProgress> {
@@ -75,7 +84,9 @@ export class UsersProgressService {
       userId,
     });
 
-    const movieProgress = userProgress.get('progress').get(userProgress.activeTimeline);
+    const movieProgress = userProgress
+      .get('progress')
+      .get(userProgress.activeTimeline);
     const movieId = movieProgress ? movieProgress.currentMovieId : null;
 
     return {

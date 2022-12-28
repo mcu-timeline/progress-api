@@ -38,7 +38,9 @@ export class UsersProgressService {
       throw new Error('User progress does not exits');
     }
 
-    const movieProgress = userProgress.progress[userProgress.activeTimeline];
+    const movieProgress = userProgress.progress.get(
+      userProgress.activeTimeline,
+    );
     const movieId = movieProgress ? movieProgress.currentMovieId : null;
 
     return {
@@ -66,7 +68,8 @@ export class UsersProgressService {
       { new: true, upsert: true },
     );
 
-    const movieProgress = userProgress.progress.activeTimelineId;
+    const movieProgress = await userProgress.progress.get(activeTimelineId);
+
     const movieId = movieProgress ? movieProgress.currentMovieId : null;
 
     return {
@@ -78,9 +81,11 @@ export class UsersProgressService {
   }
 
   async getUserProgress(userId: string): Promise<UserProgress> {
-    const userProgress = await this.userProgressModel.findOne({
-      userId,
-    });
+    const userProgress = await this.userProgressModel
+      .findOne({
+        userId,
+      })
+      .exec();
 
     if (!userProgress) {
       return {
@@ -91,7 +96,9 @@ export class UsersProgressService {
       };
     }
 
-    const movieProgress = userProgress.progress[userProgress.activeTimeline];
+    const movieProgress = userProgress.progress.get(
+      userProgress.activeTimeline,
+    );
 
     const movieId = movieProgress ? movieProgress.currentMovieId : null;
 

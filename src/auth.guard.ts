@@ -1,7 +1,7 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { verify } from 'jsonwebtoken';
+import { GetPublicKeyOrSecret, verify } from 'jsonwebtoken';
 import * as jwksClient from 'jwks-rsa';
 
 import { Config } from './config';
@@ -31,7 +31,7 @@ export class JwtAuthGuard {
       )}.well-known/jwks.json`,
     });
 
-    const getKey = (header, callback): void => {
+    const getKey: GetPublicKeyOrSecret = (header, callback): void => {
       client.getSigningKey(
         header.kid,
         (error: Error, key: jwksClient.RsaSigningKey) => {

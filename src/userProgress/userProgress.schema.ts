@@ -13,12 +13,13 @@ export class MongoUserProgress {
   activeTimeline: string;
 
   @Prop({ type: mongoose.Schema.Types.Map })
-  progress: {
-    [timelineID in string]: {
+  progress: Map<
+    string,
+    {
       timelineId: string;
       currentMovieId: string;
-    };
-  };
+    }
+  >;
 }
 
 export const UserProgressSchema =
